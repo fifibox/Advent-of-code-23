@@ -63,3 +63,51 @@ for line in file:
 print(total)
 
 ##part 2 placeholder
+def convert_num(digits): # [3,2,1] returns 123
+    total = 0
+    for i in range(len(digits)):
+        total += digits[i]*10**i
+    return total
+
+data = []
+rowsFound = [] # store row number which contains *
+
+with open('input.txt','r') as file:
+    for line in file:
+        if '*' in line:
+            rowsFound.append(len(data))
+        data.append(list(line.strip()))
+
+
+for row in rowsFound:
+    line = data[row]
+    digit = []
+    count = 0
+    numbers = []
+    position = line.index('*')
+    while line[position-1].isnumeric():
+        digit.append(int(line[position-1]))
+        position -= 1
+    if len(digit) >0:
+        count += 1
+        numbers.append(convert_num(digit))
+    
+    position = line.index('*')
+    digit = []
+    while line[position+1].isnumeric():
+        digit.append(int(line[position+1]))
+        position += 1
+    
+    # check line above 
+    if row>0:
+        line = data[row-1]
+        digit = []
+        
+    print(count,numbers)
+        
+
+
+
+
+        
+                      
