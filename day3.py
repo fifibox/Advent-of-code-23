@@ -62,52 +62,36 @@ for line in file:
     x += 1
 print(total)
 
-##part 2 placeholder
-def convert_num(digits): # [3,2,1] returns 123
-    total = 0
-    for i in range(len(digits)):
-        total += digits[i]*10**i
-    return total
+##part 2 
 
-data = []
-rowsFound = [] # store row number which contains *
+grid = open('input.txt','r').read().splitlines()
+total = 0
 
-with open('input.txt','r') as file:
-    for line in file:
-        if '*' in line:
-            rowsFound.append(len(data))
-        data.append(list(line.strip()))
-
-
-for row in rowsFound:
-    line = data[row]
-    digit = []
-    count = 0
-    numbers = []
-    position = line.index('*')
-    while line[position-1].isnumeric():
-        digit.append(int(line[position-1]))
-        position -= 1
-    if len(digit) >0:
-        count += 1
-        numbers.append(convert_num(digit))
-    
-    position = line.index('*')
-    digit = []
-    while line[position+1].isnumeric():
-        digit.append(int(line[position+1]))
-        position += 1
-    
-    # check line above 
-    if row>0:
-        line = data[row-1]
-        digit = []
+for r,row in enumerate(grid):
+    for c,ch in enumerate(row):
+        if ch != '*' :
+            continue
         
-    print(count,numbers)
-        
+        # co_ordinate set 
+        cs = set()
+        for current_row in [ r-1, r, r+1]:
+            for current_column in [c-1 , c , c+1]:
+                if current_row < 0 or current_row >= len(grid) or current_column < 0 or current_column >= len(grid[current_row]) or not grid[current_row][current_column].isdigit():
+                    continue
 
+                # if it is a digit, find the beginning coordinate of the number
+                while current_column > 0 and grid[current_row][current_column-1].isdigit():
+                    current_column -= 1
+                cs.add((current_row,current_column))
 
-
-
-        
-                      
+        if len(cs) == 2:
+            num_set = []
+            for cr,cl in cs:
+                s = ''
+                while cl < len(grid[cr]) and grid[cr][cl].isdigit():
+                    s += grid[cr][cl]
+                    cl += 1
+                num_set.append(int(s))
+            gear = num_set[0] * num_set[1]
+            total += gear
+print(total)
